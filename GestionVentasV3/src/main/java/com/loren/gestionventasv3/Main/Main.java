@@ -9,6 +9,7 @@ import com.loren.gestionventasv3.DAO.FactoriaDAO;
 import com.loren.gestionventasv3.POJO.Cliente;
 import com.loren.gestionventasv3.POJO.Comercial;
 import com.loren.gestionventasv3.POJO.Pedido;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
@@ -109,7 +110,7 @@ public class Main {
       System.out.println("8.- Salir.");
       System.out.print("Introduzca opcion: ");
    }
-   
+
    public static void menuPedidos() {
       System.out.println("********************");
       System.out.println("Menú de pedidos");
@@ -118,8 +119,8 @@ public class Main {
       System.out.println("2.- Baja de pedido.");
       System.out.println("3.- Actualizar pedido.");
       System.out.println("4.- Buscar pedido por ID.");
-      System.out.println("5.- Buscar pedido por nombre de cliente.");
-      System.out.println("6.- Buscar pedido por apellido con like.");
+      System.out.println("5.- Buscar pedido por ID de Cliente.");
+      System.out.println("6.- Buscar pedido por Nombre de Cliente.");
       System.out.println("7.- Listar pedidos.");
       System.out.println("8.- Salir.");
       System.out.print("Introduzca opcion: ");
@@ -247,8 +248,8 @@ public class Main {
          }
       }
    }
-   
-     private static void gestionPedido() {
+
+   private static void gestionPedido() {
       int menuPedido = -1;
       while (menuPedido != 8) {
          menuPedidos();
@@ -285,13 +286,13 @@ public class Main {
             }
             case 5: {
 
-               BuscarPedidoPorNombre();
+               BuscarPedidoPorIDCliente();
 
                break;
             }
             case 6: {
 
-               BuscarPedidoPorApellido();
+               BuscarPedidoPorNombreCliente();
 
                break;
             }
@@ -310,7 +311,6 @@ public class Main {
    }
 
 //    APARTADO LOGICO CLIENTE
-
    private static void mostrarClientes() {
       List<Cliente> lista = factoriaDAO.getClienteDAO().getAll();
       if ((lista != null) && (!lista.isEmpty())) {
@@ -588,6 +588,9 @@ public class Main {
       }
    }
 
+   
+//    APARTADO LOGICA PEDIDOS
+   
    private static void mostrarPedidos() {
       List<Pedido> lista = factoriaDAO.getPedidoDAO().getAll();
       if ((lista != null) && (!lista.isEmpty())) {
@@ -605,11 +608,59 @@ public class Main {
    }
 
    private static void addPedido() {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+      int filas;
+      System.out.println("Dime el total del pedido: ");
+      String totAux = teclado.nextLine();
+      System.out.println("Dime la direccion del pedido: ");
+      String fecAux = teclado.nextLine();
+
+      System.out.println("Dime el cliente del pedido: ");
+      String cliAux = teclado.nextLine();
+      System.out.println("Dime el comercial del pedido;");
+      String comAux = teclado.nextLine();
+
+//      Validar cliente
+      Cliente cliente = new Cliente();
+      cliente.setId(Long.valueOf(cliAux));
+      cliente = FactoriaDAO.getClienteDAO().findById(cliente);
+
+      if (cliente == null) {
+         System.out.println("No se ha encontrado el cliente.");
+         return;
+      }
+
+      Comercial comercial = new Comercial();
+      comercial.setId(Long.valueOf(comAux));
+      comercial = FactoriaDAO.getComercialDAO().findById(comercial);
+
+      if (comercial == null) {
+         System.out.println("No se ha encontrado el comercial.");
+         return;
+      }
+
+      Pedido pedido = new Pedido();
+      pedido.setTotal(Double.valueOf(totAux));
+      pedido.setFecha(Date.valueOf(fecAux));
+      pedido.setCliente(cliente);
+      pedido.setComercial(comercial);
+
+      filas = FactoriaDAO.getPedidoDAO().add(pedido);
+      if (filas > -1) {
+         System.out.println("Se han insertado " + filas + " filas.");
+      } else {
+         System.out.println("No se ha podido insertar.");
+      }
+
    }
 
    private static void borrarPedido() {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+      mostrarPedidos();
+      Pedido ped = new Pedido();
+      System.out.println("Dime el id del pedido a borrar: ");
+      Long idAux = Long.valueOf(teclado.nextLine());
+      ped.setId(idAux);
+      
+      
    }
 
    private static void actualizarPedido() {
@@ -617,16 +668,42 @@ public class Main {
    }
 
    private static void BuscarPedidoPorID() {
+      Pedido ped = new Pedido();
+      System.out.println("Dime el id del pedido a buscar: ");
+      Long idAux = Long.valueOf(teclado.nextLine());
+      ped.setId(idAux);
+      
+      ped = FactoriaDAO.getPedidoDAO().findById(ped);
+      
+      if (ped != null) {
+         System.out.println(ped.toString());
+      }else{
+         System.out.println("No se ha encontrado un pedido con esa id");
+      }
+   }
+
+   private static void BuscarPedidoPorIDCliente() {
       throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
    }
 
-   private static void BuscarPedidoPorNombre() {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+   private static void BuscarPedidoPorNombreCliente() {
+      System.out.println("Dime el nombre del cliente: ");
+      String nomAux = teclado.nextLine();
+      Cliente a = new Cliente();
+      a.setNombre(nomAux);
+      List<Cliente> lista = factoriaDAO.getClienteDAO().findByNombre(a);
+
+      Cliente b = lista.get(0);
+
+      if (b == null) {
+         System.out.println("No se ha encontrado el cliente");
+      } else {
+         FactoriaDAO.getPedidoDAO().loadPedidosByNombreCliente(lista.get(0));
+         for (Pedido pedido : b.getListaPedidos()) {
+            System.out.println(pedido.toString());
+         }
+      }
+
    }
 
-   private static void BuscarPedidoPorApellido() {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-   }
-
- 
 }
