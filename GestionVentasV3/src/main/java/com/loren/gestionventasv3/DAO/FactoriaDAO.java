@@ -4,6 +4,7 @@ public class FactoriaDAO {
     
     private static ClienteDAO clienteDAO = null;
     private static ComercialDAO comercialDAO = null;
+    private static PedidoDAO pedidoDAO = null;
     // private static ComercialDAO comerciaDAO = null;
     // private static PedidosDAO pedidosDAO = null;
     
@@ -19,5 +20,12 @@ public class FactoriaDAO {
             comercialDAO = new ComercialDAO();
         }
         return comercialDAO;
+    }
+    
+    public static PedidoDAO getPedidoDAO(){
+       if(pedidoDAO == null){
+          pedidoDAO = new PedidoDAO();
+       }
+       return pedidoDAO;
     }
 }

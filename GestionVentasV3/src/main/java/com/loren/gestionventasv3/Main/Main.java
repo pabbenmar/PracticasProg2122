@@ -8,6 +8,7 @@ import com.loren.gestionventasv3.DAO.ConexionBD;
 import com.loren.gestionventasv3.DAO.FactoriaDAO;
 import com.loren.gestionventasv3.POJO.Cliente;
 import com.loren.gestionventasv3.POJO.Comercial;
+import com.loren.gestionventasv3.POJO.Pedido;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
@@ -32,20 +33,21 @@ public class Main {
                // Gestion de clientes
                case 1: {
 
-                  logicaCliente();
+                  gestionCliente();
 
                   break;
                }
 //               Gestion de comerciales
                case 2: {
 
-                  logicaComercial();
+                  gestionComercial();
 
                   break;
                }
 //               Gestion de pedidos
                case 3: {
 
+                  gestionPedido();
                   break;
                }
 //                  Salida del programa
@@ -107,9 +109,24 @@ public class Main {
       System.out.println("8.- Salir.");
       System.out.print("Introduzca opcion: ");
    }
+   
+   public static void menuPedidos() {
+      System.out.println("********************");
+      System.out.println("Menú de pedidos");
+      System.out.println("********************");
+      System.out.println("1.- Alta de pedido.");
+      System.out.println("2.- Baja de pedido.");
+      System.out.println("3.- Actualizar pedido.");
+      System.out.println("4.- Buscar pedido por ID.");
+      System.out.println("5.- Buscar pedido por nombre de cliente.");
+      System.out.println("6.- Buscar pedido por apellido con like.");
+      System.out.println("7.- Listar pedidos.");
+      System.out.println("8.- Salir.");
+      System.out.print("Introduzca opcion: ");
+   }
 
 //     SWITCH DE SUBMENUS
-   private static void logicaCliente() {
+   private static void gestionCliente() {
       int menuCliente = -1;
       while (menuCliente != 8) {
          menuClientes();
@@ -170,7 +187,7 @@ public class Main {
       }
    }
 
-   private static void logicaComercial() {
+   private static void gestionComercial() {
       int menuComercial = -1;
       while (menuComercial != 8) {
          menuComerciales();
@@ -230,6 +247,68 @@ public class Main {
          }
       }
    }
+   
+     private static void gestionPedido() {
+      int menuPedido = -1;
+      while (menuPedido != 8) {
+         menuPedidos();
+         menuPedido = Integer.parseInt(teclado.nextLine());
+         switch (menuPedido) {
+            case 1: {
+
+               addPedido();
+
+               break;
+            }
+            // borrar comercial
+            case 2: {
+
+               mostrarPedidos();
+               borrarPedido();
+
+               break;
+            }
+            // Actualizar comercial
+            case 3: {
+
+               mostrarPedidos();
+               actualizarPedido();
+
+               break;
+            }
+            // Buscar comercial por id
+            case 4: {
+
+               BuscarPedidoPorID();
+
+               break;
+            }
+            case 5: {
+
+               BuscarPedidoPorNombre();
+
+               break;
+            }
+            case 6: {
+
+               BuscarPedidoPorApellido();
+
+               break;
+            }
+            case 7: {
+               mostrarPedidos();
+               break;
+            }
+            case 8: {
+               break;
+            }
+            default: {
+               System.out.println("Opción no válida");
+            }
+         }
+      }
+   }
+
 //    APARTADO LOGICO CLIENTE
 
    private static void mostrarClientes() {
@@ -509,4 +588,45 @@ public class Main {
       }
    }
 
+   private static void mostrarPedidos() {
+      List<Pedido> lista = factoriaDAO.getPedidoDAO().getAll();
+      if ((lista != null) && (!lista.isEmpty())) {
+         System.out.println("****************************");
+         System.out.println("*** LISTA DE PEDIDOS ***");
+         System.out.println("****************************");
+         for (Pedido pedido : lista) {
+            System.out.println(pedido.toString());
+         }
+      } else if (lista != null) {
+         System.out.println("No hay pedidoes en la BD.");
+      } else {
+         System.out.println("No es posible mostrar la lista de pedidos.");
+      }
+   }
+
+   private static void addPedido() {
+      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+   }
+
+   private static void borrarPedido() {
+      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+   }
+
+   private static void actualizarPedido() {
+      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+   }
+
+   private static void BuscarPedidoPorID() {
+      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+   }
+
+   private static void BuscarPedidoPorNombre() {
+      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+   }
+
+   private static void BuscarPedidoPorApellido() {
+      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+   }
+
+ 
 }
