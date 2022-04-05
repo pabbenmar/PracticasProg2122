@@ -1,0 +1,46 @@
+
+-* POJOS *-
+Parque{
+	// Atributos
+		Long id;
+		String nombre;
+		double extension;
+		Long idCiudad;
+	
+	}
+	
+Ciudad{
+	// Atributos
+		Long id;
+		String nombre;
+	}
+	
+-* DAOS *-
+FactoriaDAO{
+	private ParqueDAO parqueDao = null;
+	private CiudadDAO ciudadDao = null;
+	
+	getParqueDAO();
+	
+	getCiudadDAO();
+	
+ConexionBD{}
+
+ParqueDAO implements IParqueDAO{}
+
+CiudadDAO implements ICiudadDAO{}
+
+IParqueDAO{
+	parquesPorCiudad(Ciudad ciudad);
+	add(Parque parque, Ciudad ciudad);
+		//	si ciudad no existe informar
+	updateParque();
+	parquesPorNombreLike(Parque parque);
+	cantidadParquesPorCiudad(Ciudad ciudad);
+	borrarPorCiudad(Ciudad ciudad);
+	} 
+	
+ICiudadDAO{
+	add(Ciudad ciudad)
+	ciudadesPorTamanyoParque(Parque parque);
+	}
