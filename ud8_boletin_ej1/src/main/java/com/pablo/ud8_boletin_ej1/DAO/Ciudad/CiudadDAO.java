@@ -132,7 +132,7 @@ public class CiudadDAO implements ICiudadDAO {
          lista = new ArrayList<>();
          while (rs.next()) {
             Long idAux = rs.getLong("id");
-            String nomAux = rs.getString("nom");
+            String nomAux = rs.getString("nombre");
             Ciudad ciuAux = new Ciudad(idAux, nomAux);
             lista.add(ciuAux);
          }

@@ -41,6 +41,7 @@ public class Main {
       System.out.println("6.- Añadir ciudad");
       System.out.println("7.- Listar ciudades con parques de extension mayor a");
       System.out.println("8.- Numero de parques que tiene una ciudad.");
+      System.out.println("9.- Salir.");
       System.out.print("Elija una opcion:");
 
    }
@@ -138,7 +139,7 @@ public class Main {
    }
 
    private static void modificarParque() {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+      System.out.println("No implementado aun :D");
    }
 
    private static void borrarPorCiudad() {
@@ -147,13 +148,13 @@ public class Main {
       System.out.println("************************************************");
       System.out.println("Listado de ciudades:");
       List<Ciudad> lista = FactoriaDAO.getCiudadDAO().ListarCiudades();
-      if (lista == null){
+      if (lista == null) {
          System.out.println("No se ha podido realizar la operacion");
          return;
-      }else if(lista.isEmpty()){
+      } else if (lista.isEmpty()) {
          System.out.println("No hay ciudades registradas");
          return;
-      }else{
+      } else {
          for (Ciudad ciudad : lista) {
             System.out.println(ciudad.toString());
          }
@@ -162,16 +163,16 @@ public class Main {
       System.out.print("Elija una ciudad: ");
       Ciudad ciuAux = new Ciudad(0, SCN.nextLine());
       ciuAux = FactoriaDAO.getCiudadDAO().findByName(ciuAux);
-      if(ciuAux == null){
+      if (ciuAux == null) {
          System.out.println("La ciudad no existe");
          return;
       }
       long numABorrar = FactoriaDAO.getCiudadDAO().cantidadParquesPorCiudad(ciuAux);
-      System.out.printf("Se van a borrar %d parques, desea continuar (S/N)?:");
-      if (SCN.nextLine().toUpperCase().charAt(0)=='S') {
+      System.out.printf("Se van a borrar %d parques, desea continuar (S/N)?:", numABorrar);
+      if (SCN.nextLine().toUpperCase().charAt(0) == 'S') {
          int filas = FactoriaDAO.getParqueDAO().borrarPorCiudad(ciuAux);
-         System.out.printf("Se han borrado %d parques.%n",filas);
-      }else{
+         System.out.printf("Se han borrado %d parques.%n", filas);
+      } else {
          System.out.println("Operacion cancelada.");
       }
    }
@@ -182,13 +183,13 @@ public class Main {
       System.out.println("************************************************");
       System.out.println("Listado de ciudades:");
       List<Ciudad> lista = FactoriaDAO.getCiudadDAO().ListarCiudades();
-      if (lista == null){
+      if (lista == null) {
          System.out.println("No se ha podido realizar la operacion");
          return;
-      }else if(lista.isEmpty()){
+      } else if (lista.isEmpty()) {
          System.out.println("No hay ciudades registradas");
          return;
-      }else{
+      } else {
          for (Ciudad ciudad : lista) {
             System.out.println(ciudad.toString());
          }
@@ -197,31 +198,88 @@ public class Main {
       System.out.print("Elija una ciudad: ");
       Ciudad ciuAux = new Ciudad(0, SCN.nextLine());
       ciuAux = FactoriaDAO.getCiudadDAO().findByName(ciuAux);
-      if(ciuAux == null){
+      if (ciuAux == null) {
          System.out.println("La ciudad no existe");
          return;
       }
       FactoriaDAO.getCiudadDAO().parquesPorCiudad(ciuAux);
-      if(!ciuAux.getListaParques().isEmpty()){
-         System.out.printf("Lista de parques en %s:%n",ciuAux.getNombre());
-         for (Ciudad ciudad : lista) {
-            System.out.println(ciudad.getListaParques().toString());
+      if (!ciuAux.getListaParques().isEmpty()) {
+         System.out.printf("Lista de parques en %s:%n", ciuAux.getNombre());
+         for (Parque parque : ciuAux.getListaParques()) {
+            System.out.println(parque.toString());
          }
-      }else{
+      } else {
          System.out.println("La ciudad no tiene parques.");
       }
    }
 
    private static void addCiudad() {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+      System.out.println("***********************");
+      System.out.println("**** Añadir ciudad ****");
+      System.out.println("***********************");
+      System.out.print("Introduzca nombre de la ciudad: ");
+      String nomAux = SCN.nextLine();
+      Ciudad ciuAux = new Ciudad(-1, nomAux);
+
+      int filas = FactoriaDAO.getCiudadDAO().add(ciuAux);
+      if (filas < 0) {
+         System.out.println("Error al realizar la operacion");
+      } else if (filas == 0) {
+         System.out.println("No se han modificado los datos");
+      } else {
+         System.out.printf("Se han insertado %d ciudades.%n", filas);
+      }
    }
 
    private static void listarCiudadPorExtension() {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+      System.out.println("**********************************************************");
+      System.out.println("**** Listar ciudades con parques con parques extensos ****");
+      System.out.println("**********************************************************");
+      System.out.print("Introduzca la extension minima a tener en cuenta: ");
+      double extAux = Double.valueOf(SCN.nextLine());
+      Parque parqAux = new Parque();
+      parqAux.setExtension(extAux);
+      List<Ciudad> lista = FactoriaDAO.getCiudadDAO().ciudadesPorTamanyoParque(parqAux);
+      if(lista == null){
+         System.out.println("No se ha podido realizar la operacion");
+      }else if (lista.isEmpty()){
+         System.out.printf("No hay ciudades que contengan parques con extension de mas de %0.2f.%n",extAux);
+      }else{
+         System.out.printf("Ciudades con parques de mas de %.2f:%n",extAux);
+         for (Ciudad ciudad : lista) {
+            System.out.println(ciudad.toString());
+         }
+      }
+      
    }
 
    private static void contarParquesEnCiudad() {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+      System.out.println("*****************************************");
+      System.out.println("**** Numero de parques en una ciudad ****");
+      System.out.println("*****************************************");
+      System.out.println("Listado de ciudades:");
+      List<Ciudad> lista = FactoriaDAO.getCiudadDAO().ListarCiudades();
+      if (lista == null) {
+         System.out.println("No se ha podido realizar la operacion");
+         return;
+      } else if (lista.isEmpty()) {
+         System.out.println("No hay ciudades registradas");
+         return;
+      } else {
+         for (Ciudad ciudad : lista) {
+            System.out.println(ciudad.toString());
+         }
+      }
+      System.out.println("-------------------");
+      System.out.print("Elija una ciudad: ");
+      Ciudad ciuAux = new Ciudad(0, SCN.nextLine());
+      ciuAux = FactoriaDAO.getCiudadDAO().findByName(ciuAux);
+      if (ciuAux == null) {
+         System.out.println("La ciudad no existe");
+         return;
+      }
+      long numABorrar = FactoriaDAO.getCiudadDAO().cantidadParquesPorCiudad(ciuAux);
+      System.out.printf("La ciudad %s tiene %d parques.%n", ciuAux.getNombre(), numABorrar);
    }
 
 }
