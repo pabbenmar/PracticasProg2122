@@ -23,26 +23,7 @@ public class ParqueDAO implements IParqueDAO {
 
    Connection conn = ConexionBD.getConnection();
 
-   @Override
-   public void parquesPorCiudad(Ciudad ciudad) {
-      String sql = "SELECT * FROM parque WHERE idCiudad = ?;";
-      try {
-         PreparedStatement ps = conn.prepareStatement(sql);
-         ps.setLong(1, ciudad.getId());
-         ResultSet rs = ps.executeQuery();
-
-         while (rs.next()) {
-            long idAux = rs.getLong("id");
-            String nomAux = rs.getString("nombre");
-            double extAux = rs.getLong("extension");
-            Parque a = new Parque(idAux, nomAux, extAux, ciudad);
-            ciudad.getListaParques().add(a);
-         }
-         rs.close();
-         ps.close();
-      } catch (Exception e) {
-      }
-   }
+   
 
    @Override
    public int add(Parque parque) {

@@ -11,6 +11,7 @@ import com.pablo.ud8_boletin_ej1.POJO.Parque;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,6 +82,7 @@ public class CiudadDAO implements ICiudadDAO {
          return null;
       }
    }
+
    public Ciudad findByName(Ciudad ciudad) {
       String sql = "SELECT * FROM ciudad WHERE nombre = ?;";
       try {
@@ -110,7 +112,7 @@ public class CiudadDAO implements ICiudadDAO {
          PreparedStatement ps = conn.prepareStatement(sql);
          ps.setLong(1, ciudad.getId());
          ResultSet rs = ps.executeQuery();
-         if(rs.next()){
+         if (rs.next()) {
             parques = rs.getLong(1);
          }
          rs.close();
@@ -118,6 +120,48 @@ public class CiudadDAO implements ICiudadDAO {
          return parques;
       } catch (Exception e) {
          return -1;
+      }
+   }
+
+   public List<Ciudad> ListarCiudades() {
+      String sql = "SELECT * FROM ciudad;";
+      List<Ciudad> lista = null;
+      try {
+         Statement st = conn.createStatement();
+         ResultSet rs = st.executeQuery(sql);
+         lista = new ArrayList<>();
+         while (rs.next()) {
+            Long idAux = rs.getLong("id");
+            String nomAux = rs.getString("nom");
+            Ciudad ciuAux = new Ciudad(idAux, nomAux);
+            lista.add(ciuAux);
+         }
+         rs.close();
+         st.close();
+         return lista;
+      } catch (Exception e) {
+         return lista;
+      }
+   }
+
+   @Override
+   public void parquesPorCiudad(Ciudad ciudad) {
+      String sql = "SELECT * FROM parque WHERE idCiudad = ?;";
+      try {
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ps.setLong(1, ciudad.getId());
+         ResultSet rs = ps.executeQuery();
+
+         while (rs.next()) {
+            long idAux = rs.getLong("id");
+            String nomAux = rs.getString("nombre");
+            double extAux = rs.getLong("extension");
+            Parque a = new Parque(idAux, nomAux, extAux, ciudad);
+            ciudad.getListaParques().add(a);
+         }
+         rs.close();
+         ps.close();
+      } catch (Exception e) {
       }
    }
 }

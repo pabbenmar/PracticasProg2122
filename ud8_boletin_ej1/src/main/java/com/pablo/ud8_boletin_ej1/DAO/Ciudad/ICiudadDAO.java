@@ -19,4 +19,6 @@ public interface ICiudadDAO {
    public long cantidadParquesPorCiudad(Ciudad ciudad);
 
    public List<Ciudad> ciudadesPorTamanyoParque(Parque parque);
+
+   public void parquesPorCiudad(Ciudad ciudad);
 }

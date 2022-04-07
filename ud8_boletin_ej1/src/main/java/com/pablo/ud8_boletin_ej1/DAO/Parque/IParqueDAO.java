@@ -14,8 +14,6 @@ import java.util.List;
  */
 public interface IParqueDAO {
 
-   public void parquesPorCiudad(Ciudad ciudad);
-
    public int add(Parque parque);
    //	si ciudad no existe informar
 
