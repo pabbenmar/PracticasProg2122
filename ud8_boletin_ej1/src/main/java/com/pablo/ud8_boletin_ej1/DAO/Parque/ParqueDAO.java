@@ -6,6 +6,7 @@
 package com.pablo.ud8_boletin_ej1.DAO.Parque;
 
 import com.pablo.ud8_boletin_ej1.DAO.ConexionBD;
+import com.pablo.ud8_boletin_ej1.DAO.FactoriaDAO;
 import com.pablo.ud8_boletin_ej1.POJO.Ciudad;
 import com.pablo.ud8_boletin_ej1.POJO.Parque;
 import java.sql.Connection;
@@ -14,44 +15,120 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 /**
  *
  * @author Pablo Benavent Martínez
  */
-public class ParqueDAO implements IParqueDAO{
-   
+public class ParqueDAO implements IParqueDAO {
+
    Connection conn = ConexionBD.getConnection();
 
    @Override
-   public List<Parque> parquesPorCiudad(Ciudad ciudad) {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+   public void parquesPorCiudad(Ciudad ciudad) {
+      String sql = "SELECT * FROM parque WHERE idCiudad = ?;";
+      try {
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ps.setLong(1, ciudad.getId());
+         ResultSet rs = ps.executeQuery();
+
+         while (rs.next()) {
+            long idAux = rs.getLong("id");
+            String nomAux = rs.getString("nombre");
+            double extAux = rs.getLong("extension");
+            Parque a = new Parque(idAux, nomAux, extAux, ciudad);
+            ciudad.getListaParques().add(a);
+         }
+         rs.close();
+         ps.close();
+      } catch (Exception e) {
+      }
    }
 
    @Override
-   public int add(Parque parque, Ciudad ciudad) {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+   public int add(Parque parque) {
+      int filas = -1;
+      String sql = "INSERT INTO parque(nombre,extension,idCiudad) "
+              + "VALUES (?,?,?)";
+      try {
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ps.setString(1, parque.getNombre());
+         ps.setDouble(2, parque.getExtension());
+         ps.setLong(3, parque.getCiudad().getId());
+
+         filas = ps.executeUpdate();
+         ps.close();
+         return filas;
+      } catch (Exception e) {
+         return -1;
+      }
    }
 
    @Override
-   public int updateParque() {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+   public int updateParque(Parque parque) {
+      int filas = -1;
+      String sql = "UPDATE parque SET nombre = ?, extension = ?, idCiudad = ?"
+              + " WHERE id = ?;";
+      try {
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ps.setString(1, parque.getNombre());
+         ps.setDouble(2, parque.getExtension());
+         ps.setLong(3, parque.getCiudad().getId());
+         ps.setLong(4, parque.getId());
+
+         filas = ps.executeUpdate();
+         ps.close();
+         return filas;
+      } catch (Exception e) {
+         return -1;
+      }
    }
 
    @Override
    public List<Parque> parquesPorNombreLike(Parque parque) {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-   }
+      List<Parque> lista = new ArrayList<>();
+      String sql = "SELECT * FROM parque WHERE nombre LIKE ?;";
+      try {
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ps.setString(1, "%" + parque.getNombre() + "%");
+         ResultSet rs = ps.executeQuery();
 
-   @Override
-   public int cantidadParquesPorCiudad(Ciudad ciudad) {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+         while (rs.next()) {
+            long idAux = rs.getLong("id");
+            String nomAux = rs.getString("nombre");
+            double extAux = rs.getDouble("extension");
+            long ciuAux = rs.getLong("idCiudad");
+
+//            Buscar la ciudad que le corresponde al parque
+//             la ciudad es de un parque ya introducido, asumimos que la BD está bien.
+            Ciudad a = new Ciudad();
+            a.setId(ciuAux);
+            a = FactoriaDAO.getCiudadDAO().findById(a);
+
+//            Crear parque y añadir a lista
+            Parque b = new Parque(idAux, nomAux, extAux, a);
+            lista.add(b);
+         }
+         rs.close();
+         ps.close();
+         return lista;
+      } catch (Exception e) {
+         return null;
+      }
    }
 
    @Override
    public int borrarPorCiudad(Ciudad ciudad) {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+      int filas = -1;
+      String sql = "DELETE FROM parque WHERE idCiudad = ?;";
+      try {
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ps.setLong(1, ciudad.getId());
+         filas = ps.executeUpdate();
+         ps.close();
+         return filas;
+      } catch (Exception e) {
+         return -1;
+      }
    }
-    
+
 }

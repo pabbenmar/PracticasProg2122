@@ -38,8 +38,8 @@ public class CiudadDAO implements ICiudadDAO {
          PreparedStatement ps = conn.prepareStatement(sql2);
          ps.setDouble(1, parque.getExtension());
          ResultSet rs = ps.executeQuery();
-         
-         while(rs.next()){
+
+         while (rs.next()) {
             Long idAux = rs.getLong("id");
             String nomAux = rs.getString("nombre");
             Ciudad a = new Ciudad(idAux, nomAux);
@@ -47,8 +47,33 @@ public class CiudadDAO implements ICiudadDAO {
          }
          return lista;
       } catch (Exception e) {
-      return null;
+         return null;
       }
    }
 
+   public Ciudad findById(Ciudad ciudad) {
+      String sql = "SELECT * FROM ciudad WHERE id = ?;";
+      try {
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ps.setLong(1, ciudad.getId());
+         ResultSet rs = ps.executeQuery();
+
+         Ciudad a = null;
+         if (rs.next()) {
+            long idAux = rs.getLong("id");
+            String nomAux = rs.getString("nombre");
+            a = new Ciudad(idAux, nomAux);
+         }
+         rs.close();
+         ps.close();
+         return a;
+      } catch (Exception e) {
+         return null;
+      }
+   }
+
+   @Override
+   public int cantidadParquesPorCiudad(Ciudad ciudad) {
+      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+   }
 }

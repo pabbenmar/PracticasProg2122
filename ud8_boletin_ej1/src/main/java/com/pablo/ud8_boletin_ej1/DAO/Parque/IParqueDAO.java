@@ -13,11 +13,15 @@ import java.util.List;
  * @author Windows 10
  */
 public interface IParqueDAO {
-        public List<Parque> parquesPorCiudad(Ciudad ciudad);
-	public int add(Parque parque, Ciudad ciudad);
-		//	si ciudad no existe informar
-	public int updateParque();
-	public List<Parque> parquesPorNombreLike(Parque parque);
-	public int cantidadParquesPorCiudad(Ciudad ciudad);
-	public int borrarPorCiudad(Ciudad ciudad);
+
+   public void parquesPorCiudad(Ciudad ciudad);
+
+   public int add(Parque parque);
+   //	si ciudad no existe informar
+
+   public int updateParque(Parque parque);
+
+   public List<Parque> parquesPorNombreLike(Parque parque);
+
+   public int borrarPorCiudad(Ciudad ciudad);
 }

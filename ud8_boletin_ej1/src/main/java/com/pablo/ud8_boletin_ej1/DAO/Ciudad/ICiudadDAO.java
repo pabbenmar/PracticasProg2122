@@ -13,6 +13,10 @@ import java.util.List;
  * @author Windows 10
  */
 public interface ICiudadDAO {
+
    public int add(Ciudad ciudad);
+
+   public int cantidadParquesPorCiudad(Ciudad ciudad);
+
    public List<Ciudad> ciudadesPorTamanyoParque(Parque parque);
 }
