@@ -36,11 +36,12 @@ IParqueDAO{
 		//	si ciudad no existe informar
 	updateParque();
 	parquesPorNombreLike(Parque parque);
-	cantidadParquesPorCiudad(Ciudad ciudad);
+
 	borrarPorCiudad(Ciudad ciudad);
 	} 
 	
 ICiudadDAO{
 	add(Ciudad ciudad)
 	ciudadesPorTamanyoParque(Parque parque);
+	cantidadParquesPorCiudad(Ciudad ciudad);
 	}

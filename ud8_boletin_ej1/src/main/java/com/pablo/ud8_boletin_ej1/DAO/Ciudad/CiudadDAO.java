@@ -24,7 +24,17 @@ public class CiudadDAO implements ICiudadDAO {
 
    @Override
    public int add(Ciudad ciudad) {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+      int filas = -1;
+      String sql = "INSERT INTO ciudad(nombre) VALUES (?);";
+      try {
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ps.setString(1, ciudad.getNombre());
+         filas = ps.executeUpdate();
+         ps.close();
+         return filas;
+      } catch (Exception e) {
+         return -1;
+      }
    }
 
    @Override
@@ -71,9 +81,43 @@ public class CiudadDAO implements ICiudadDAO {
          return null;
       }
    }
+   public Ciudad findByName(Ciudad ciudad) {
+      String sql = "SELECT * FROM ciudad WHERE nombre = ?;";
+      try {
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ps.setString(1, ciudad.getNombre());
+         ResultSet rs = ps.executeQuery();
+
+         Ciudad a = null;
+         if (rs.next()) {
+            long idAux = rs.getLong("id");
+            String nomAux = rs.getString("nombre");
+            a = new Ciudad(idAux, nomAux);
+         }
+         rs.close();
+         ps.close();
+         return a;
+      } catch (Exception e) {
+         return null;
+      }
+   }
 
    @Override
-   public int cantidadParquesPorCiudad(Ciudad ciudad) {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+   public long cantidadParquesPorCiudad(Ciudad ciudad) {
+      long parques = -1;
+      String sql = "SELECT COUNT(*) FROM parque WHERE idCiudad = ?;";
+      try {
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ps.setLong(1, ciudad.getId());
+         ResultSet rs = ps.executeQuery();
+         if(rs.next()){
+            parques = rs.getLong(1);
+         }
+         rs.close();
+         ps.close();
+         return parques;
+      } catch (Exception e) {
+         return -1;
+      }
    }
 }
