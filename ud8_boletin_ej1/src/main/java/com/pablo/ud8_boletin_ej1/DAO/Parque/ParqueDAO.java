@@ -12,6 +12,7 @@ import com.pablo.ud8_boletin_ej1.POJO.Parque;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +23,6 @@ import java.util.List;
 public class ParqueDAO implements IParqueDAO {
 
    Connection conn = ConexionBD.getConnection();
-
-   
 
    @Override
    public int add(Parque parque) {
@@ -112,4 +111,62 @@ public class ParqueDAO implements IParqueDAO {
       }
    }
 
+   public List<Parque> listParque() {
+      List<Parque> lista = null;
+      String sql = "SELECT * FROM parque;";
+      try {
+         Statement ps = conn.createStatement();
+         ResultSet rs = ps.executeQuery(sql);
+         lista = new ArrayList<>();
+         while (rs.next()) {
+            long idAux = rs.getLong("id");
+            String nomAux = rs.getString("nombre");
+            double extAux = rs.getDouble("extension");
+            long ciuAux = rs.getLong("idCiudad");
+
+//            Buscar la ciudad que le corresponde al parque
+//             la ciudad es de un parque ya introducido, asumimos que la BD está bien.
+            Ciudad a = new Ciudad();
+            a.setId(ciuAux);
+            a = FactoriaDAO.getCiudadDAO().findById(a);
+
+//            Crear parque y añadir a lista
+            Parque b = new Parque(idAux, nomAux, extAux, a);
+            lista.add(b);
+         }
+         rs.close();
+         ps.close();
+         return lista;
+      } catch (Exception e) {
+         e.printStackTrace();
+         return null;
+      }
+   }
+
+   public Parque getParqueByNombre(Parque parque) {
+      Parque parAux = null;
+      String sql = "SELECT * FROM parque WHERE nombre = ?;";
+      try {
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ps.setString(1, parque.getNombre());
+         ResultSet rs = ps.executeQuery();
+         if (rs.next()) {
+            long idAux = rs.getLong("id");
+            String nomAux = rs.getString("nombre");
+            double extAux = rs.getDouble("extension");
+            long ciuAux = rs.getLong("idCiudad");
+
+            Ciudad ciu = new Ciudad();
+            ciu.setId(ciuAux);
+            ciu = FactoriaDAO.getCiudadDAO().findById(ciu);
+
+            parAux = new Parque(idAux, nomAux, extAux, ciu);
+         }
+         rs.close();
+         ps.close();
+         return parAux;
+      } catch (Exception e) {
+         return parAux;
+      }
+   }
 }

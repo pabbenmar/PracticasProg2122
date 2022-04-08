@@ -139,7 +139,53 @@ public class Main {
    }
 
    private static void modificarParque() {
-      System.out.println("No implementado aun :D");
+      System.out.println("*****************************");
+      System.out.println("**** Modificar un parque ****");
+      System.out.println("*****************************");
+      List<Parque> listaParques = FactoriaDAO.getParqueDAO().listParque();
+      if(listaParques == null){
+         System.out.println("No se ha podido realizar la operacion");
+         return;
+      }else if(listaParques.isEmpty()){
+         System.out.println("No hay parques registrados en el sistema.");
+         return;
+      }else{
+         System.out.println("Listado de parques: ");
+         for (Parque parque : listaParques) {
+            System.out.println(parque.toString());
+         }
+      }
+//      Solicitar parque y comprobar que existe
+      System.out.print("Elija el parque a modificar (por nombre): ");
+      Parque aModificar = new Parque(0, SCN.nextLine(), 0, null);
+      aModificar = FactoriaDAO.getParqueDAO().getParqueByNombre(aModificar);
+      if(aModificar == null){
+         System.out.println("Parque no encontrado, volviendo al menu.");
+         return;
+      }
+//         Solicitar nuevos valores
+         System.out.println("Introduzca los nuevos datos del parque...");
+         System.out.print("Introduzca nombre: ");
+         String nomAux = SCN.nextLine();
+         System.out.print("Introduzca extensión: ");
+         String extAux = SCN.nextLine();
+         System.out.print("Introduzca nombre de la ciudad: ");
+         String ciuAux = SCN.nextLine();
+//         Comprobar ciudad correcta
+         Ciudad ciu = new Ciudad(0, ciuAux);
+         ciu = FactoriaDAO.getCiudadDAO().findByName(ciu);
+         if(ciu == null && !ciuAux.trim().isBlank()){
+            System.out.println("Ciudad no encontrada, volviendo al menú.");
+            return;
+         }
+//         Establecer nuevos valores
+         aModificar.setNombre(nomAux.trim().isEmpty()?aModificar.getNombre():nomAux);
+         aModificar.setExtension(extAux.trim().isEmpty()?aModificar.getExtension():Double.valueOf(extAux));
+         aModificar.setCiudad(ciuAux.trim().isEmpty()?aModificar.getCiudad():ciu);
+         
+//         Hacer el update
+         int filas = FactoriaDAO.getParqueDAO().updateParque(aModificar);
+         System.out.println("Se han modificado " + filas + " parques.");
    }
 
    private static void borrarPorCiudad() {
